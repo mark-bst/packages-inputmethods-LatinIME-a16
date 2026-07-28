@@ -606,6 +606,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mDisplayContext = getDisplayContext();
         KeyboardSwitcher.init(this);
         super.onCreate();
+        // A16DBG:P2:MECH BST IME listener port init via reflection (a13; avoids classpath issue)
+        try {
+            Object bstUtils = getApplicationContext().getSystemService("bstutils");
+            if (bstUtils != null) {
+                java.lang.reflect.Method m = bstUtils.getClass().getMethod("setProperty", String.class, String.class);
+                m.invoke(bstUtils, "bst.config.ime_listenerport", "0");
+            }
+        } catch (Exception e) {
+            // BST service not available — non-fatal
+        }
 
         mHandler.onCreate();
 
