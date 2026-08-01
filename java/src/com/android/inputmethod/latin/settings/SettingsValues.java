@@ -169,7 +169,7 @@ public class SettingsValues {
         mKeypressSoundVolume = Settings.readKeypressSoundVolume(prefs, res);
         mKeyPreviewPopupDismissDelay = Settings.readKeyPreviewPopupDismissDelay(prefs, res);
         mEnableEmojiAltPhysicalKey = prefs.getBoolean(
-                Settings.PREF_ENABLE_EMOJI_ALT_PHYSICAL_KEY, true);
+                Settings.PREF_ENABLE_EMOJI_ALT_PHYSICAL_KEY, false);
         mShowAppIcon = Settings.readShowSetupWizardIcon(prefs, context);
         mIsShowAppIconSettingInPreferences = prefs.contains(Settings.PREF_SHOW_SETUP_WIZARD_ICON);
         mAutoCorrectionThreshold = readAutoCorrectionThreshold(res,
@@ -305,14 +305,12 @@ public class SettingsValues {
 
     private static boolean readSuggestionsEnabled(final SharedPreferences prefs) {
         if (prefs.contains(Settings.PREF_SHOW_SUGGESTIONS_SETTING_OBSOLETE)) {
-            final boolean alwaysHide = SUGGESTIONS_VISIBILITY_HIDE_VALUE_OBSOLETE.equals(
-                    prefs.getString(Settings.PREF_SHOW_SUGGESTIONS_SETTING_OBSOLETE, null));
             prefs.edit()
                     .remove(Settings.PREF_SHOW_SUGGESTIONS_SETTING_OBSOLETE)
-                    .putBoolean(Settings.PREF_SHOW_SUGGESTIONS, !alwaysHide)
+                    .putBoolean(Settings.PREF_SHOW_SUGGESTIONS, false)
                     .apply();
         }
-        return prefs.getBoolean(Settings.PREF_SHOW_SUGGESTIONS, true);
+        return prefs.getBoolean(Settings.PREF_SHOW_SUGGESTIONS, false);
     }
 
     private static boolean readBigramPredictionEnabled(final SharedPreferences prefs,

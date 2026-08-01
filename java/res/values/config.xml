@@ -98,7 +98,7 @@
          2. Meta mask (if any) from android.view.KeyEvent
          Used in EmojiAltPhysicalKeyDetector and KeyboardSwitcher. -->
     <string-array name="keyboard_switcher_emoji" translatable="false">
-        <item>57,16</item> <!-- KeyEvent.KEYCODE_ALT_LEFT , KeyEvent.META_ALT_LEFT_ON -->
+        <!-- Alt is reserved for host and game keyboard mappings. -->
     </string-array>
 
     <!-- Key codes of hardware keys that can be used to toggle the Symbols (Shifted) layout.
@@ -107,6 +107,6 @@
          2. Meta mask (if any) from android.view.KeyEvent
          Used in EmojiAltPhysicalKeyDetector and KeyboardSwitcher. -->
     <string-array name="keyboard_switcher_symbols_shifted" translatable="false">
-        <item>58,32</item> <!-- KeyEvent.KEYCODE_ALT_RIGHT , KeyEvent.META_ALT_RIGHT_ON -->
+        <!-- Alt is reserved for host and game keyboard mappings. -->
     </string-array>
 </resources>

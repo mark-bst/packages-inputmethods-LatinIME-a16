@@ -204,6 +204,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private GestureConsumer mGestureConsumer = GestureConsumer.NULL_GESTURE_CONSUMER;
 
     public final UIHandler mHandler = new UIHandler(this);
+    private BstImeBridge mBstImeBridge;
 
     public static final class UIHandler extends LeakGuardHandlerWrapper<LatinIME> {
         private static final int MSG_UPDATE_SHIFT_STATE = 0;
@@ -606,16 +607,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mDisplayContext = getDisplayContext();
         KeyboardSwitcher.init(this);
         super.onCreate();
-        // A16DBG:P2:MECH BST IME listener port init via reflection (a13; avoids classpath issue)
-        try {
-            Object bstUtils = getApplicationContext().getSystemService("bstutils");
-            if (bstUtils != null) {
-                java.lang.reflect.Method m = bstUtils.getClass().getMethod("setProperty", String.class, String.class);
-                m.invoke(bstUtils, "bst.config.ime_listenerport", "0");
-            }
-        } catch (Exception e) {
-            // BST service not available — non-fatal
-        }
+        mBstImeBridge = new BstImeBridge(this);
+        mBstImeBridge.start();
 
         mHandler.onCreate();
 
@@ -766,6 +759,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onDestroy() {
+        if (mBstImeBridge != null) {
+            mBstImeBridge.stop();
+        }
         mDictionaryFacilitator.closeDictionaries();
         mSettings.onDestroy();
         unregisterReceiver(mHideSoftInputReceiver);
@@ -1800,6 +1796,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     getApplicationContext().getResources());
         }
         mEmojiAltPhysicalKeyDetector.onKeyDown(keyEvent);
+        if (mBstImeBridge != null && mBstImeBridge.handleHardwareKey(keyCode, keyEvent)) {
+            return true;
+        }
         if (!ProductionFlags.IS_HARDWARE_KEYBOARD_SUPPORTED) {
             return super.onKeyDown(keyCode, keyEvent);
         }
